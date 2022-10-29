@@ -1,6 +1,7 @@
 using LibData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using WebShopAPI.Mapper;
 using WebShopAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,12 +10,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppEFContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddCors();
+
+builder.Services.AddAutoMapper(typeof(AppMapProfile));
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseCors(x => x.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
