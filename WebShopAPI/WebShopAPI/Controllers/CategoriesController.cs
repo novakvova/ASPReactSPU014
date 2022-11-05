@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LibData;
+using LibData.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,31 @@ namespace WebShopAPI.Controllers
                 .Select(x => _mapper.Map<CategoryItemViewModel>(x))
                 .ToListAsync();
             return Ok(model);
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromForm] CategoryCreateViewModel model)
+        {
+            string fileName = string.Empty;
+            if(model.Image!=null)
+            {
+                var fileExp = Path.GetFileName(model.Image.FileName);
+                var dirPath = Path.Combine(Directory.GetCurrentDirectory(), "images");
+                fileName = Path.GetRandomFileName() + fileExp;
+                using(var stream = System.IO.File.Create(Path.Combine(dirPath, fileName)))
+                {
+                    await model.Image.CopyToAsync(stream);
+                }    
+            }
+            CategoryEntity category = new CategoryEntity
+            {
+                Name=model.Name,
+                Image=fileName,
+                DateCreated= DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc)
+            };
+            _context.Categories.Add(category);
+            _context.SaveChanges();
+            return Ok();
         }
     }
 }
