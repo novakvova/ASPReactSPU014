@@ -36,6 +36,9 @@ namespace WebShopAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterViewModel model)
         {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
+                return BadRequest(new { error = "Користувач уже зареєстровано" });
             try
             {
                 string fileName = string.Empty;
@@ -49,7 +52,7 @@ namespace WebShopAPI.Controllers
                         await model.Image.CopyToAsync(stream);
                     }
                 }
-                var user = new UserEntity
+                user = new UserEntity
                 {
                     Email = model.Email,
                     UserName = model.Email,
