@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Reflection;
 using System.Text;
 using WebShopAPI.Mapper;
 using WebShopAPI.Services;
@@ -59,7 +60,12 @@ builder.Services.AddAuthentication(options =>
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
+builder.Services.AddSwaggerGen(c=>
+{
+    var fileDoc = Path.Combine(AppContext.BaseDirectory, $"{assemblyName}.xml");
+    c.IncludeXmlComments(fileDoc);
+});
 
 var app = builder.Build();
 
