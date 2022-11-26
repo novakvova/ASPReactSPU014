@@ -1,7 +1,12 @@
+
 import { Link } from "react-router-dom";
+import { useTypedSelector } from "../../hooks/useTypedSelector";
+import http from "../../http_common";
 
 const Header = () => {
-    let isAuth = false;
+    //const dispatch = useDispatch();
+    const {isAuth, user} = useTypedSelector(store => store.auth);
+    //let isAuth = false;
     return (
         <header className="p-3 text-bg-dark">
             <div className="container">
@@ -22,15 +27,16 @@ const Header = () => {
                     { isAuth ? 
                        (
                         <div className="dropdown">
-                            <a href="#" className="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" className="rounded-circle" />
-                            </a>
+                            <Link to="#" className="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span>{user?.email} &nbsp;</span>
+                                <img src={`${http.getUri()}${user?.image}`} alt="mdo" width="32" height="32" className="rounded-circle" />
+                            </Link>
                             <ul className="dropdown-menu dropdown-menu-dark text-small">
-                                <li><a className="dropdown-item" href="#">New project...</a></li>
-                                <li><a className="dropdown-item" href="#">Settings</a></li>
-                                <li><a className="dropdown-item" href="#">Profile</a></li>
+                                <li><Link to="#" className="dropdown-item">New project...</Link></li>
+                                <li><Link to="#" className="dropdown-item">Settings</Link></li>
+                                <li><Link to="#" className="dropdown-item">Profile</Link></li>
                                 <li><hr className="dropdown-divider"/></li>
-                                <li><a className="dropdown-item" href="#">Sign out</a></li>
+                                <li><Link to="#" className="dropdown-item">Sign out</Link></li>
                             </ul>
                         </div>
                         )

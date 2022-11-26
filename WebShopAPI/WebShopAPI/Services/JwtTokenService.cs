@@ -25,9 +25,15 @@ namespace WebShopAPI.Services
         public async Task<string> GenerateTokenAsync(UserEntity user)
         {
             var roles = await _userManager.GetRolesAsync(user);
+            string image = "default.jpg";
+            if(!string.IsNullOrEmpty(user.Image))
+            {
+                image = user.Image;
+            }
             List<Claim> claims = new List<Claim>()
             {
-                new Claim("name", user.UserName)
+                new Claim("email", user.UserName),
+                new Claim("image", $"/images/{image}")
             };
 
             foreach (var role in roles)
