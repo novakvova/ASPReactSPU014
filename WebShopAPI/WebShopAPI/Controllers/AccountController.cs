@@ -25,13 +25,13 @@ namespace WebShopAPI.Controllers
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
-                return BadRequest();
+                return BadRequest(new { error = "Дані вказно не вірно!"});
             if (await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 string token = await _jwtTokenService.GenerateTokenAsync(user);
                 return Ok(new { token });
             }
-            return BadRequest();
+            return BadRequest(new { error = "Дані вказно не вірно!" });
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterViewModel model)
