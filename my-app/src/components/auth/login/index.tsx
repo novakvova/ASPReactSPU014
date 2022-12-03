@@ -34,7 +34,7 @@ const LoginPage = () =>
             const { data } = resp;
             localStorage.token = data.token;
             const token = jwtDecode<IUser>(data.token);
-            
+            http.defaults.headers.common["Authorization"]=`Bearer ${data.token}`;
             const user: IUser = {
                 email: token.email,
                 image: token.image

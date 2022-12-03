@@ -4,7 +4,7 @@ const initialState : AuthState= {
 }
 
 export const authReducer = (state = initialState, action : any) : AuthState => {
-    switch(action.type){
+    switch(action.type) {
         case AuthActionTypes.LOGIN_SUCCESS: {
             return {
                 ...state,
@@ -14,6 +14,14 @@ export const authReducer = (state = initialState, action : any) : AuthState => {
                 }
             };
         } 
+        case AuthActionTypes.LOGOUT: {
+            return {
+                ...state,
+                isAuth: false,
+                user: undefined
+            };
+        } 
+        default:
+            return state;
     }
-    return state;
 }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import http from "../../../http_common";
 import { IUserItem } from "./types";
 
-const HomePage = () => {
+const UsersPage = () => {
 
     const [list, setList] = useState<Array<IUserItem>>([
     ]);
@@ -45,4 +45,4 @@ const HomePage = () => {
     );
 }
 
-export default HomePage;
+export default UsersPage;

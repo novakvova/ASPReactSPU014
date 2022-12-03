@@ -1,10 +1,12 @@
 
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import http from "../../http_common";
+import { AuthActionTypes } from "../auth/store/types";
 
 const Header = () => {
-    //const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const {isAuth, user} = useTypedSelector(store => store.auth);
     //let isAuth = false;
     return (
@@ -18,7 +20,7 @@ const Header = () => {
 
                     <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                         <li><Link to="/" className="nav-link px-2 text-secondary">Home</Link></li>
-                        <li><Link to="/features" className="nav-link px-2 text-white">Features</Link></li>
+                        <li><Link to="/users" className="nav-link px-2 text-white">Користувачі</Link></li>
                         <li><Link to="/pricing" className="nav-link px-2 text-white">Pricing</Link></li>
                         <li><Link to="/faqs" className="nav-link px-2 text-white">FAQs</Link></li>
                         <li><Link to="/about" className="nav-link px-2 text-white">About</Link></li>
@@ -36,7 +38,11 @@ const Header = () => {
                                 <li><Link to="#" className="dropdown-item">Settings</Link></li>
                                 <li><Link to="#" className="dropdown-item">Profile</Link></li>
                                 <li><hr className="dropdown-divider"/></li>
-                                <li><Link to="#" className="dropdown-item">Sign out</Link></li>
+                                <li><Link to="/" className="dropdown-item"
+                                    onClick={()=> {
+                                        localStorage.removeItem("token");
+                                        dispatch({type: AuthActionTypes.LOGOUT});
+                                    }}>Вийти</Link></li>
                             </ul>
                         </div>
                         )
