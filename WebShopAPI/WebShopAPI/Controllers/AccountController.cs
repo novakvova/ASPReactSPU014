@@ -1,4 +1,5 @@
 ﻿using LibData.Entities.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -78,5 +79,26 @@ namespace WebShopAPI.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPost("changePassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangeNewPasswordViewModel model)
+        {
+            var userName = User.Claims.FirstOrDefault().Value;
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user != null) {
+                if (await _userManager.CheckPasswordAsync(user, model.CurrentPassword))
+                {
+                    string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                    return Ok(new { message ="Пароль успішно змінено" });
+                }
+                else
+                {
+                    return BadRequest(new {message ="Пароль вказано не вірно"});
+                }
+            }
+
+            return BadRequest(new { message = "Дані вказно не вірно" });
+        }
     }
 }
