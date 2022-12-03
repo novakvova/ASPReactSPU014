@@ -11,6 +11,7 @@ const LoginPage = () =>
 {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [loginError, setLoginError] = useState<string>("");
 
     const [state, setState] = useState<IAuthLogin>({
         email: "",
@@ -27,10 +28,12 @@ const LoginPage = () =>
     const handleSubmit = (e: React.SyntheticEvent)=> {
         e.preventDefault();
         console.log("Login user in server", state);
+        
         axios.post<IAuthResponse>(`${http.getUri()}/api/account/login`,
             state
         )
         .then(resp => {
+            setLoginError("");
             const { data } = resp;
             localStorage.token = data.token;
             const token = jwtDecode<IUser>(data.token);
@@ -43,12 +46,20 @@ const LoginPage = () =>
             console.log("server response user login", token);
             navigate("/"); 
         }, bad_resp => {
-            console.log("Помилка ", bad_resp);
+            const error_message = bad_resp.response.data.error;
+            setLoginError(error_message);
+            //console.log("Помилка ", );
         });        
     } 
     return (
         <>
             <h1 className="text-center">Login Page</h1>
+            {loginError &&
+                <div className="alert alert-danger" role="alert">
+                    {loginError}
+                </div>
+            }
+            
             <form onSubmit={handleSubmit} className="col-md-6 offset-md-3">
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Вкажіть назву</label>
